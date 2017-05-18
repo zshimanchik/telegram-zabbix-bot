@@ -1,12 +1,13 @@
+import logging
 from collections import namedtuple
 
-import logging
 import telebot
 from django.conf import settings
+from requests.exceptions import RequestException
 
 from api_action import create_action, RPCException
-from . import models
 from . import constants as c
+from . import models
 
 LOGGER = logging.getLogger(__name__)
 Command = namedtuple('Command', ['command', 'handler', 'help'])
@@ -63,14 +64,19 @@ class TelegramZabbixBot:
         user.zabbix_pass = args[3]
         self.api.send_message(user.telegram_id, "Ok. Trying to create an action.")
         try:
-            LOGGER.info("{}".format((user.zabbix_host, user.zabbix_user, user.zabbix_pass)))
-            create_action(user.zabbix_host, user.zabbix_user, user.zabbix_pass)
+            command = "curl -k --data '{{TRIGGER.NAME}}' {callback}".format(
+                callback=user.get_zabbix_callback())
+            create_action(user.zabbix_host, user.zabbix_user, user.zabbix_pass, command)
             user.save()
             self.api.send_message(user.telegram_id, "Action was successfully created.")
         except RPCException as ex:
             self.api.send_message(user.telegram_id, "Can't create action because of the reason: "
                                                     "{0}".format(ex.message))
+        except RequestException:
+            self.api.send_message(user.telegram_id, "Can't reach zabbix. Are you sure that it is "
+                                                    "available?")
         except Exception as ex:
+            LOGGER.exception(ex)
             self.api.send_message(user.telegram_id, "Can't create action. Are you sure that your "
                                                     "credentials a real?")
 

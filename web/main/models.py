@@ -1,6 +1,8 @@
-from django.db import models
 import random
 import string
+
+from django.conf import settings
+from django.db import models
 
 
 def token_generator():
@@ -16,3 +18,8 @@ class User(models.Model):
 
     def __str__(self):
         return "User[{0}]".format(self.telegram_id)
+
+    def get_zabbix_callback(self):
+        return "https://{domain}:{port}/zabbix_callback/{token}".format(domain=settings.DOMAIN,
+                                                                        port=settings.SITE_SSL_PORT,
+                                                                        token=self.token)

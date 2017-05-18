@@ -1,8 +1,4 @@
-
-#  curl https://api.telegram.org/bot133216541:AAEsCwSzhEDdrr8rTo4FQ3FWHE6TlL83j_c/sendMessage -d 'chat_id=126881502' -d 'text=Hello, world'
-
 import requests
-from django.conf import settings
 
 
 class RPCException(Exception):
@@ -35,13 +31,10 @@ def rpc(zabbix_url, method, params=None, auth=None):
     return resp['result']
 
 
-def create_action(zabbix_server, user, password):
+def create_action(zabbix_server, user, password, command):
     zabbix_url = 'http://{}/api_jsonrpc.php'.format(zabbix_server)
     token = rpc(zabbix_url, 'user.login', {'user': user, 'password': password})
 
-    command = "curl https://api.telegram.org/bot{0}/sendMessage -d 'chat_id=126881502' -d 'text={{TRIGGER.NAME}}'".format(settings.TELEGRAM_BOT_API)
-    print(token)
-    print(command)
     create_action_data = {
         "esc_period": "60",
         "eventsource": 0,
@@ -50,7 +43,6 @@ def create_action(zabbix_server, user, password):
             {
                 "operationtype": 1,
                 'opcommand': {
-                    # 'command': 'curl http://potatolol.requestcatcher.com/ --data "{TRIGGER.STATUS}: {TRIGGER.NAME}"',
                     'command': command,
                     'type': 0,
                     'execute_on': 1,
