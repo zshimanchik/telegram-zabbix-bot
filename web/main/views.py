@@ -2,11 +2,11 @@ import json
 
 import telebot
 from django.http.response import HttpResponse
-from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 import logging
 
 from .bot import bot
+from . import models
 
 LOGGER = logging.getLogger(__name__)
 
@@ -24,6 +24,22 @@ def telegram_webhook(request):
                          request.body,
                          exc_info=ex)
     return HttpResponse()
+
+
+@csrf_exempt
+def zabbix_callback(request, token):
+    try:
+        user = models.User.objects.get(token=token)
+        if request.body:
+            LOGGER.debug("Zabbix callback: for user {0}, "
+                         "sending data: \'{1}\'".format(user, request.body))
+            bot.api.send_message(user.telegram_id, request.body)
+        return HttpResponse("Zabbix callback... <br>"
+                            "for user: {}<br>"
+                            "sending data: {}".format(user, request.body))
+    except models.User.DoesNotExist:
+        return HttpResponse("Zabbix callback. User not found with token: {}".format(token),
+                            status=404)
 
 
 def main(request):
