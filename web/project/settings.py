@@ -21,7 +21,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'i1ehzv-h@)ppjc-!d4k$_6_cc0kl)0y@gv1wtsh2#6l058xmj)'
+
+TELEGRAM_BOT_API = '386390100:AAHTC6G2y-_V1evyNPgEu2l_kDsiQ3GC9fQ'
+DOMAIN = '138.68.66.24'
+SITE_SSL_PORT = '8443'
 TELEGRAM_WEBHOOK_PATH = 't4OZdZZoFHu6nSIFIUi13oOMYa4RxZcC72ujPT9T'
+PUBLIC_SSL_CERT = os.path.join(BASE_DIR, '../nginx/conf/certs.d/138.68.66.24.crt')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
