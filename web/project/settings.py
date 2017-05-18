@@ -24,9 +24,9 @@ SECRET_KEY = 'i1ehzv-h@)ppjc-!d4k$_6_cc0kl)0y@gv1wtsh2#6l058xmj)'
 TELEGRAM_WEBHOOK_PATH = 't4OZdZZoFHu6nSIFIUi13oOMYa4RxZcC72ujPT9T'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
