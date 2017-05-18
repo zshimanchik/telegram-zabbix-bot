@@ -5,4 +5,5 @@ from . import views
 
 urlpatterns = [
     url(r'^{0}$'.format(settings.TELEGRAM_WEBHOOK_PATH), views.telegram_webhook),
+    url(r'', views.main),
 ]
