@@ -5,7 +5,7 @@ import telebot
 from django.conf import settings
 from requests.exceptions import RequestException
 
-from api_action import create_action, RPCException
+from api_action import RPCException, ZabbixApi
 from . import constants as c
 from . import models
 
@@ -66,7 +66,8 @@ class TelegramZabbixBot:
         try:
             command = "curl -k --data '{{TRIGGER.NAME}}' {callback}".format(
                 callback=user.get_zabbix_callback())
-            create_action(user.zabbix_host, user.zabbix_user, user.zabbix_pass, command)
+            api = ZabbixApi(user.zabbix_host, user.zabbix_user, user.zabbix_pass)
+            api.create_action(command)
             user.save()
             self.api.send_message(user.telegram_id, "Action was successfully created.")
         except RPCException as ex:
