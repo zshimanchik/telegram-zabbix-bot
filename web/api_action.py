@@ -75,7 +75,7 @@ class ZabbixApi:
         return rpc(self._url, 'item.get', params, self._token)
 
     def get_item_last_value(self, item_id):
-        params = {'itemids': [item_id], 'output': ['lastclock', 'lastvalue']}
+        params = {'itemids': [item_id], 'output': ['itemid', 'name', 'key_', 'lastclock', 'lastvalue']}
         item = rpc(self._url, 'item.get', params, self._token)[0]
         t = time.localtime(int(item.pop('lastclock')))
         item['lastcheck'] = time.strftime('%Y-%m-%d %H:%M:%S', t)
