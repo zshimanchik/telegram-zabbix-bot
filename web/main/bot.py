@@ -72,9 +72,11 @@ class TelegramZabbixBot:
             command = "curl -k --data '{{TRIGGER.NAME}}' {callback}".format(
                 callback=user.get_zabbix_callback())
             api = ZabbixApi(user.zabbix_host, user.zabbix_user, user.zabbix_pass)
-            api.create_action(command)
+            if api.create_action(command):
+                self.api.send_message(user.telegram_id, "Action was successfully created.")
+            else:
+                self.api.send_message(user.telegram_id, "Action already registered.")
             user.save()
-            self.api.send_message(user.telegram_id, "Action was successfully created.")
         except RPCException as ex:
             self.api.send_message(user.telegram_id, "Can't create action because of the reason: "
                                                     "{0}".format(ex.message))

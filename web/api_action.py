@@ -42,10 +42,14 @@ class ZabbixApi:
         self._token = login(self._url, user, password)
 
     def create_action(self, command):
+        action_name = "Notify Telegram Bot"
+        if self._check_action_exists(action_name):
+            return False
+
         create_action_data = {
             "esc_period": "60",
             "eventsource": 0,
-            "name": "Notify Telegram Bot",
+            "name": action_name,
             "operations": [
                 {
                     "operationtype": 1,
@@ -64,8 +68,13 @@ class ZabbixApi:
             'def_longdata': '{TRIGGER.STATUS}: {TRIGGER.NAME}',
             'def_shortdata': '{TRIGGER.STATUS}: {TRIGGER.NAME}',
         }
-
         rpc(self._url, 'action.create', create_action_data, self._token)
+        return True
+
+    def _check_action_exists(self, name):
+        exists = rpc(self._url, 'action.get', {'filter': {'name': name}}, self._token)
+        return bool(exists)
+
 
     def get_hosts(self):
         return rpc(self._url, 'host.get', {'output': ['name', 'host', 'hostid']}, self._token)
