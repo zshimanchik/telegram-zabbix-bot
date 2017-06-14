@@ -5,7 +5,7 @@ uwsgi --socket=:3031 \
       --harakiri=60 \
       --max-requests=10000 \
       --post-buffering=8192 \
-      --wsgi-file=/app/smartsub/wsgi.py \
+      --wsgi-file=/app/project/wsgi.py \
       --master \
       --pidfile=/tmp/uwsgi.pid \
       --vacuum \
